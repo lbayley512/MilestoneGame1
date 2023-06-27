@@ -80,6 +80,7 @@ map.forEach((row, i) => {
 
 function animate() {
     requestAnimationFrame(animate)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
     boundaries.forEach((boundary) => {
         boundary.draw()
     })
