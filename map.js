@@ -5,6 +5,8 @@ canvas.height = innerWidth;
 canvas.height = innerHeight;
 
 class boundary {
+    static width = 40
+    static height = 40
     constructor({position}) {
         this.posistion = position;
         this.width = 40
@@ -12,12 +14,33 @@ class boundary {
     }
 
     draw() {
-        ctx.fillstyle = "blue"
+        ctx.fillstyle = 'black'
         ctx.fillRect(this.posistion.x, this.posistion.y, this.width, this.height)
 
     }
 }
 
+class Player {
+    constructor({position, velocity}){
+        this.position = position 
+        this.velocity = velocity 
+        this.radius = 15
+    }
+
+    draw(){
+        ctx.beginPath()
+        ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
+        ctx.fillStyle = 'yellow'
+        ctx.fill()
+        ctx.closePath()
+    }
+
+    update() {
+        this.draw()
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+    }
+}
 
 const map = [
     ['-','-','-','-','-','-','-','-'],
@@ -29,7 +52,16 @@ const map = [
 ]
 
 const boundaries = []
-
+const player = new Player({
+    position: {
+        x: 40 + 40/2,
+        y: 40 + 40/2
+    },
+    velocity: {
+        x: 0,
+        y: 0
+    }
+})
 
 map.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -46,7 +78,35 @@ map.forEach((row, i) => {
     })
 })
 
-boundaries.forEach((boundary) => {
-    boundary.draw()
-})
+function animate() {
+    requestAnimationFrame(animate)
+    boundaries.forEach((boundary) => {
+        boundary.draw()
+    })
+    player.update()
+}
 
+animate()
+
+
+
+
+
+
+addEventListener('keydown', (e) => {
+    switch(e.key) {
+        case 'w':
+            player.velocity.y = -5
+            break
+        case 'a':
+            player.velocity.x = -5
+            break
+        case 's':
+            player.velocity.y = 5
+            break
+        case 'd':
+            player.velocity.x = 5
+            break
+    }
+    console.log(player.velocity)
+})
