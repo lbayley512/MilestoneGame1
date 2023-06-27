@@ -15,6 +15,12 @@ class Player {
         ctx.fill()
         ctx.closePath()
     }
+
+    update() {
+        this.draw()
+        this.position.x += this.velocity.x
+        this.position.x += this.velocity.x
+    }
 }
 
 const player = new Player({
@@ -27,9 +33,32 @@ const player = new Player({
         y: 0
     }
 })
+function move(){
+    requestAnimationFrame(move)
+    
+    player.update()
+}
+move()
 
-player.draw()
 
-window.addEventListener('keydown', (event) => {
-    console.log(event)
+
+addEventListener('keydown', (e) => {
+    switch(e.key) {
+        case 'w':
+            player.velocity.y = -5
+            break
+        case 'a':
+            player.velocity.y = -5
+            break
+        case 's':
+            player.velocity.y = -5
+            break
+        case 'd':
+            player.velocity.y = -5
+            break
+    }
+    console.log(player.velocity)
 })
+
+
+
