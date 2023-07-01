@@ -43,6 +43,22 @@ class Player {
         this.position.y += this.velocity.y
     }
 }
+
+class Point {
+    //give the player position, velocity and size
+    constructor({position}){
+        this.position = position 
+        this.radius = 3
+    }
+    // draw the player in the staring position
+    draw(){
+        ctx.beginPath()
+        ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
+        ctx.fillStyle = 'yellow'
+        ctx.fill()
+        ctx.closePath()
+    }
+}
 // track the last key that was pressed for better movment control
 const keys = {
     w: {
@@ -63,12 +79,12 @@ let lastkey = ''
 const map = [
     ['-','-','-','-','-','-','-','-'],
     ['-',' ',' ',' ',' ',' ',' ','-'],
-    ['-',' ','-',' ','-','-',' ','-'],
-    ['-',' ','-',' ','-','-',' ','-'],
+    ['-',' ','-',' ',' ','-',' ','-'],
+    ['-',' ','-',' ',' ','-',' ','-'],
     ['-',' ',' ',' ',' ',' ',' ','-'],
     ['-','-','-','-','-','-','-','-']
 ]
-
+const points = []
 const boundaries = []
 // create the player
 const player = new Player({
@@ -94,32 +110,30 @@ map.forEach((row, i) => {
                 }
             }))
             break
+            case ' ': 
+            // switch the symbol while giveing it the correct position
+            points.push(new Point({
+                position: {
+                    x: j * Boundary.width + Boundary.width/2, 
+                    y: i * Boundary.height +Boundary.height/2
+                }
+            }))
+            break
         }
     })
 })
 // adding collioson
 function collision ({circle, rectangle}){ 
-    return circle.position.y - circle.radius <= rectangle.position.y + rectangle.height && circle.position.x + circle.radius >= rectangle.position.x && circle.position.y + circle.radius >= rectangle.position.y && circle.position.x - circle.radius <= rectangle.position.x + rectangle.width
+    return circle.position.y - circle.radius + player.velocity.y <= rectangle.position.y + rectangle.height && circle.position.x + circle.radius + player.velocity.x >= rectangle.position.x && circle.position.y + circle.radius + player.velocity.y >= rectangle.position.y && circle.position.x - circle.radius + player.velocity.x <= rectangle.position.x + rectangle.width
 }
 // animation loop to update and display the player movement
 function animate() {
     requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    boundaries.forEach((boundary) => {
-        boundary.draw()
-
-        if (collision({circle: player, rectangle: boundary})){
-            console.log("we are colliding!")
-        }
-    })
-    player.update()
-    player.velocity.y = 0
-    player.velocity.x = 0
-    
-    
     if (keys.w.pressed && lastkey === 'w') {
         player.velocity.y = -5
     }
+    
     else if (keys.a.pressed && lastkey === 'a'){
         player.velocity.x = -5
     }
@@ -129,7 +143,32 @@ function animate() {
     else if (keys.d.pressed && lastkey === 'd'){
         player.velocity.x = 5
     }
+    
+points.forEach((point, i) => {
+    point.draw()
+    if (Math.hypot(point.position.x - player.position.x, point.position.y - player.position.y) < point.radius + player.radius) {
+        console.log("touching")
+        points.splice(i,1)
+    }
+
+})
+
+    boundaries.forEach((boundary) => {
+        boundary.draw()
+        
+        if (collision({circle: player, rectangle: boundary})){
+            console.log("we are colliding!")
+            player.velocity.y = 0
+            player.velocity.x = 0
+        }
+    })
+
+    player.update()
+    player.velocity.y = 0
+    player.velocity.x = 0
+    
 }
+
 
 animate()
 
