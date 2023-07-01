@@ -9,14 +9,14 @@ class Boundary {
     static height = 40
     // give the map a position on the screen 
     constructor({position}) {
-        this.posistion = position;
+        this.position = position;
         this.width = 40
         this.height = 40
     }
     // draw out the boundaries
     draw() {
         ctx.fillstyle = 'black'
-        ctx.fillRect(this.posistion.x, this.posistion.y, this.width, this.height)
+        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
 
     }
 }
@@ -89,33 +89,34 @@ map.forEach((row, i) => {
             // switch the symbol while giveing it the correct position
             boundaries.push(new Boundary({
                 position: {
-                    x: 40 * j,
-                    y: 40 * i,
+                    x: Boundary.width * j,
+                    y: Boundary.height * i,
                 }
             }))
             break
         }
     })
 })
-
+// adding collioson
+function collision ({circle, rectangle}){ 
+    return circle.position.y - circle.radius <= rectangle.position.y + rectangle.height && circle.position.x + circle.radius >= rectangle.position.x && circle.position.y + circle.radius >= rectangle.position.y && circle.position.x - circle.radius <= rectangle.position.x + rectangle.width
+}
 // animation loop to update and display the player movement
 function animate() {
     requestAnimationFrame(animate)
-    // clear the frames from shwoing the previous position
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     boundaries.forEach((boundary) => {
         boundary.draw()
-        // adding collioson
-        if (player.position.y - player.radius <= boundary.position.y + boundary.height && player.position.x + player.radius >= boundary.position.x && player.position.y + player.radius >= boundary.position.y && player.position.x - player.radius <= boundary.position.x + boundary.width){
+
+        if (collision({circle: player, rectangle: boundary})){
             console.log("we are colliding!")
         }
     })
     player.update()
-    //set intitial velocity to 0
     player.velocity.y = 0
     player.velocity.x = 0
     
-    // adding character interaction 
+    
     if (keys.w.pressed && lastkey === 'w') {
         player.velocity.y = -5
     }

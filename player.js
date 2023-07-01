@@ -1,3 +1,4 @@
+// import "map.js"
 // canvas = document.getElementById('game-canvas');
 // ctx = canvas.getContext("2d");
 
