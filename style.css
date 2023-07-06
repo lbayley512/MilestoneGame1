@@ -4,6 +4,12 @@ canvas {
     
 }
 
+* {
+    text-align: center;
+}
+h2, h1 {
+    color: yellow
+}
 body{
     background-color: blue;
     width: 100vw;
