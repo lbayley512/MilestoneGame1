@@ -45,17 +45,18 @@ class Player {
 }
 
 class Ghost {
-    //give the player position, velocity and size
+    //give the ghost position, velocity and size
     static speed = 2
     constructor({position, velocity, color = 'red'}){
         this.position = position 
         this.velocity = velocity 
         this.radius = 15
         this.color = color
+        // previous collisions to help with movement
         this.prevCollisions = []
         this.speed = 2
     }
-    // draw the player in the staring position
+    // draw the ghost in the staring position
     draw(){
         ctx.beginPath()
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
@@ -63,7 +64,7 @@ class Ghost {
         ctx.fill()
         ctx.closePath()
     }
-    // draw the player in the new position
+    // draw the ghost moving
     update() {
         this.draw()
         this.position.x += this.velocity.x
@@ -72,12 +73,12 @@ class Ghost {
 }
 
 class Point {
-    //give the player position, velocity and size
+    //give the dot position, velocity and size
     constructor({position}){
         this.position = position 
         this.radius = 3
     }
-    // draw the player in the staring position
+    // draw the dot in the staring position
     draw(){
         ctx.beginPath()
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2 )
@@ -141,7 +142,7 @@ map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         switch(symbol){
             case '-': 
-            // switch the symbol while giveing it the correct position
+            // switch the symbol while giving it the correct position
             boundaries.push(new Boundary({
                 position: {
                     x: Boundary.width * j,
@@ -150,7 +151,7 @@ map.forEach((row, i) => {
             }))
             break
             case ' ': 
-            // switch the symbol while giveing it the correct position
+            // switch the symbol while giving it the correct position
             points.push(new Point({
                 position: {
                     x: j * Boundary.width + Boundary.width/2, 
@@ -171,7 +172,9 @@ let animateId
 // animation loop to update and display the player movement
 function animate() {
     animationId = requestAnimationFrame(animate)
+    // clears the tracer behind the moving charcter
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // moves player, last key allows other directions to occer while holding down a key
     if (keys.w.pressed && lastkey === 'w') {
         player.velocity.y = -5
     }
@@ -187,7 +190,9 @@ function animate() {
     }
     
 points.forEach((point, i) => {
+    // draw the points
     point.draw()
+    // add collisions with points and player
     if (Math.hypot(point.position.x - player.position.x, point.position.y - player.position.y) < point.radius + player.radius) {
         console.log("touching")
         points.splice(i,1)
@@ -196,8 +201,9 @@ points.forEach((point, i) => {
 })
 
     boundaries.forEach((boundary) => {
+        // drawing boundaries
         boundary.draw()
-        
+        // making player stop if it collides with boundary
         if (collision({circle: player, rectangle: boundary})){
             console.log("we are colliding!")
             player.velocity.y = 0
@@ -210,6 +216,7 @@ points.forEach((point, i) => {
     player.velocity.x = 0
 
     ghosts.forEach(ghost => {
+        // adding collision and losing screen with the ghost
         ghost.update()
         if (Math.hypot(ghost.position.x - player.position.x, ghost.position.y - player.position.y) < ghost.radius + player.radius) {
             console.log("You Lose")
@@ -217,14 +224,16 @@ points.forEach((point, i) => {
             window.open("lose.html")
             
         }
-
+        // creating win 
         if (points.length == 0){
             console.log("You Win!")
             cancelAnimationFrame(animationId)
             window.open("win.html")
         }
+        // creating ghost movement
         const collisions = []
         boundaries.forEach((boundary) => {
+
             if (
                 !collisions.includes('right') &&
                 collision({circle: {
@@ -280,24 +289,26 @@ points.forEach((point, i) => {
             }
         })
         
-
+        // tracking previos collisions 
         if(collisions.length > ghost.prevCollisions.length ){ 
         ghost.prevCollisions = collisions
         }
+
         if (JSON.stringify(collisions) !== JSON.stringify(ghost.prevCollisions)) {
-            
+            // push the pre collision into the array 
             if (ghost.velocity.x > 0) {ghost.prevCollisions.push('right')}
             else if (ghost.velocity.x < 0) {ghost.prevCollisions.push('left')}
             else if (ghost.velocity.y  < 0) {ghost.prevCollisions.push('up')}
             else if (ghost.velocity.y > 0) {ghost.prevCollisions.push('down')}
+            // track the path that there is no collision
             const pathways = ghost.prevCollisions.filter(collision => {
                 return !collisions.includes(collision)
 
             })
-           
+           // generate a random path
             const direction = pathways[Math.floor(Math.random() * pathways.length)]
            
-
+            // change the ghost velocioty/direction based on direction var
             switch (direction) {
                 case 'down':
                     ghost.velocity.y = ghost.speed
