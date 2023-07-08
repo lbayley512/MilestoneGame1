@@ -222,13 +222,14 @@ points.forEach((point, i) => {
             console.log("You Lose")
             cancelAnimationFrame(animationId)
             window.open("lose.html")
-            
+            window.close()
         }
         // creating win 
         if (points.length == 0){
             console.log("You Win!")
             cancelAnimationFrame(animationId)
             window.open("win.html")
+            window.close()
         }
         // creating ghost movement
         const collisions = []
