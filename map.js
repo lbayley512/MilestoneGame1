@@ -1,6 +1,7 @@
-canvas = document.getElementById('game-canvas');
-ctx = canvas.getContext("2d");
-
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext("2d");
+const scoreNum = document.getElementById('score')
+const loseScoreNum = document.getElementById('lose-score')
 canvas.height = innerWidth;
 canvas.height = innerHeight;
 // create class for boarders
@@ -103,6 +104,7 @@ const keys = {
     }
 }
 let lastkey = ''
+let scores = 0
 // creat the map layout
 const map = [
     ['-','-','-','-','-','-','-','-'],
@@ -196,6 +198,8 @@ points.forEach((point, i) => {
     if (Math.hypot(point.position.x - player.position.x, point.position.y - player.position.y) < point.radius + player.radius) {
         console.log("touching")
         points.splice(i,1)
+        scores += 100
+        scoreNum.innerHTML = scores
     }
 
 })
@@ -222,12 +226,14 @@ points.forEach((point, i) => {
             console.log("You Lose")
             cancelAnimationFrame(animationId)
             window.open("lose.html")
+
             window.close()
         }
         // creating win 
         if (points.length == 0){
             console.log("You Win!")
             cancelAnimationFrame(animationId)
+            scoreNum.innerHTML = scores
             window.open("win.html")
             window.close()
         }
