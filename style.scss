@@ -1,0 +1,51 @@
+$heading-color: yellow;
+$background-color: black;
+$padding: 50px;
+$margin: 300px;
+$align: center;
+$width: 100vw;
+$height: 100vh;
+$shadow: 5px 5px black;
+$font-size: 80px;
+$span-color: white;
+
+@function bg-color($color) {
+    @if ($color == blue) {
+        @return black;
+        }@else {
+        @return rgb(9, 9, 59);
+        }
+    }
+.body{ 
+    background-color: bg-color($background-color);
+    width: $width;
+    height: $height;
+
+    .h1{
+         &.h2{
+            font-size: $font-size;
+            color: $heading-color;
+        }
+    }
+}
+
+@mixin title {
+    text-shadow: $shadow;
+    font-size: $font-size;
+}
+
+#title {
+    @include title;
+}
+
+span {
+    color: $span-color
+}
+*{
+    text-align: $align;
+}
+canvas{
+    padding-top: $padding;
+    margin-left: $margin;
+}
+

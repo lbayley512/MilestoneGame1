@@ -1,0 +1,29 @@
+.body {
+  background-color: rgb(9, 9, 59);
+  width: 100vw;
+  height: 100vh;
+}
+.body .h1.h2 {
+  font-size: 80px;
+  color: yellow;
+}
+
+#title {
+  text-shadow: 5px 5px black;
+  font-size: 80px;
+}
+
+span {
+  color: white;
+}
+
+* {
+  text-align: center;
+}
+
+canvas {
+  padding-top: 50px;
+  margin-left: 300px;
+}
+
+/*# sourceMappingURL=scssStyle.css.map */

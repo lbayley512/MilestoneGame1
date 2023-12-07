@@ -55,7 +55,7 @@ class Ghost {
         this.color = color
         // previous collisions to help with movement
         this.prevCollisions = []
-        this.speed = 2
+        this.speed = 4
     }
     // draw the ghost in the staring position
     draw(){
